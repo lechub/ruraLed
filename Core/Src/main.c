@@ -22,6 +22,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+#include "mainFunctions.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -87,6 +89,8 @@ int main(void)
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
 
+  userInit();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -94,6 +98,8 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+
+	  mainPoll();
 
     /* USER CODE BEGIN 3 */
   }
