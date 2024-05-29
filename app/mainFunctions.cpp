@@ -31,6 +31,7 @@ int userInit(){
 	QuickTask::hold(true);
 	WatchDog::init();
 
+	Automat::init();
 //	Pinout * pins = Pinout::getInstance();
 //	pins->init();
 

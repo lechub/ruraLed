@@ -48,7 +48,11 @@ static inline uint32_t getRandom(uint32_t minVal, uint32_t maxVal){
 	return minVal + (rnd%range);
 }
 
-//uint32_t getRandom(uint32_t minVal, uint32_t maxVal);
+static inline bool getRandomBool(){
+	uint32_t rnd = getRandomU32();
+	return rnd < (UINT32_MAX/2);
+}
+
 
 #endif /* RANDOMRNG_H_ */
 

@@ -6,7 +6,7 @@
  */
 
 #include <Automat.h>
+#include "QuickTask.h"
 
 
-
-QuickTask pseudoPwmQtsk = QuickTask(QuickTask::QT_PERIODIC, Automat::poll,  POLL_PERIOD_MS);
+QuickTask automatQtsk = QuickTask(QuickTask::QT_PERIODIC, Automat::poll,  Automat::POLL_PERIOD_MS);
