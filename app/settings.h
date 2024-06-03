@@ -62,16 +62,16 @@ static constexpr uint32_t COLOR_OFF = 0x0UL;
 
 static constexpr uint16_t LINE_TEST_LENGTH = 200;
 
-static constexpr uint32_t BUZZ_FREQUENCY_MIN = 30;
-static constexpr uint32_t BUZZ_FREQUENCY_MAX = 200;
+static constexpr uint32_t BUZZ_FREQUENCY_MIN = 10;
+static constexpr uint32_t BUZZ_FREQUENCY_MAX = 50;
 
-static constexpr uint32_t BUZZ_TIME_MIN_MS = 500;
-static constexpr uint32_t BUZZ_TIME_MAX_MS = 3000;
+static constexpr uint32_t BUZZ_TIME_MIN_MS = 2 * 1000;
+static constexpr uint32_t BUZZ_TIME_MAX_MS = 8 * 1000;
 
 static constexpr uint32_t ON_TIME_MIN_MS = 3 * 1000;
-static constexpr uint32_t ON_TIME_MAX_MS = 10 * 1000;
+static constexpr uint32_t ON_TIME_MAX_MS = 15 * 1000;
 
-static constexpr uint32_t OFF_TIME_MIN_MS = 500;
+static constexpr uint32_t OFF_TIME_MIN_MS = 2 * 1000;
 static constexpr uint32_t OFF_TIME_MAX_MS = 5 * 1000;
 
 

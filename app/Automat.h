@@ -30,7 +30,7 @@ public:
 	enum class Channel :uint8_t{
 		CH1,
 		CH2,
-		//CH3,
+		CH3,
 		COUNT,	// znacznik ilości
 		None,	// znacznik braku lub wyjści apoza iterator
 	};
@@ -39,10 +39,10 @@ public:
 
 	//static constexpr uint8_t ChannelCount(){ return static_cast<uint8_t>(Channel::COUNT); }
 	static constexpr Channel firstCh(){ return Channel::CH1; }
-	static constexpr Channel nextCh(Channel chn){
+	static inline  Channel nextCh(Channel chn){
 		uint8_t next = static_cast<uint8_t>(chn) + 1;
 		if (next >= ChannelCount) return Channel::None;
-		return static_cast<Channel>(chn);
+		return static_cast<Channel>(next);
 	}
 	static constexpr bool isValid(Channel channel){ return static_cast<uint8_t>(channel) < ChannelCount; }
 
@@ -53,6 +53,7 @@ public:
 		uint16_t	startFreq;	// częstotliwośc początkowa
 		uint16_t	stopFreq;	// częstotliwośc końcowa
 		Phase		phase;		//
+		bool		light;		// stan - świeci/nie świeci
 	};
 
 private:
@@ -71,23 +72,26 @@ private:
 		Rura * rura = getRura(channel);
 		if (rura == nullptr) return;
 		rura->startFreq = getRandom(BUZZ_FREQUENCY_MIN, BUZZ_FREQUENCY_MAX);
-		rura->stopFreq = getRandom(BUZZ_FREQUENCY_MIN, BUZZ_FREQUENCY_MAX);
+		rura->stopFreq = getRandom(rura->startFreq, BUZZ_FREQUENCY_MAX);
 	}
 
 	static void setRura(Channel channel, bool newState){
 		switch(channel){
 		case Channel::CH1:
-			HAL_GPIO_WritePin(rura1_GPIO_Port, rura1_Pin, newState ? GPIO_PIN_SET : GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(rura1_GPIO_Port, rura1_Pin, newState ?  GPIO_PIN_SET : GPIO_PIN_RESET);
 			break;
 		case Channel::CH2:
-			HAL_GPIO_WritePin(rura2_GPIO_Port, rura2_Pin, newState ? GPIO_PIN_SET : GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(rura2_GPIO_Port, rura2_Pin, newState ?  GPIO_PIN_SET : GPIO_PIN_RESET);
+			break;
+		case Channel::CH3:
+			HAL_GPIO_WritePin(rura3_GPIO_Port, rura3_Pin, newState ?  GPIO_PIN_SET : GPIO_PIN_RESET);
 			break;
 		default: break;
 		}
 	}
 
 	static void setSound(bool newState){
-		HAL_GPIO_WritePin(sound_GPIO_Port, sound_Pin, newState ? GPIO_PIN_SET : GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(sound_GPIO_Port, sound_Pin, newState ?  GPIO_PIN_SET : GPIO_PIN_RESET);
 	}
 
 
@@ -97,12 +101,54 @@ private:
 			return HAL_GPIO_ReadPin(rura1On_GPIO_Port, rura1On_Pin) != GPIO_PinState::GPIO_PIN_RESET;
 		case Channel::CH2:
 			return HAL_GPIO_ReadPin(rura2On_GPIO_Port, rura2On_Pin) != GPIO_PinState::GPIO_PIN_RESET;
+		case Channel::CH3:
+			return HAL_GPIO_ReadPin(rura3On_GPIO_Port, rura3On_Pin) != GPIO_PinState::GPIO_PIN_RESET;
 		default: break;
 		}
+		return false;
 	}
 
 	static inline void generateLight(){
-		for (Channel chn = firstCh(); isValid(chn); nextCh(chn)){
+		for (Channel chn = firstCh(); isValid(chn); chn = nextCh(chn)){
+			Rura * rura = getRura(chn);
+
+			switch(rura->phase){
+			case Phase::BUZZING:{
+				uint32_t Freq1 =  rura->startFreq;
+				uint32_t Freq2 =  rura->stopFreq;
+				uint32_t time1 =  rura->timer;
+
+				uint32_t f1 = (Freq2 - Freq1);
+				f1 *= time1;
+				f1 /= rura->phaseTime;
+				f1 += Freq1;
+
+				uint32_t t1 = 1000 / f1;	// w milisekundach
+				//t1 >> 1;	// przez 2 żeby mieć polowe okresu
+				uint32_t onTime = t1/4;
+				if (t1 == 0){
+					t1 = 1;
+				}
+				rura->light = (time1 % t1) < onTime;
+			}break;
+
+			case Phase::TURNED_ON:
+				rura->light = true;
+				break;
+			case Phase::TURNED_OFF:
+				rura->light = false;
+			default:
+				rura->light = false;
+				break;
+			}
+
+			setRura(chn, rura->light);
+		}
+	}
+
+	static inline void calculateTimes(){
+
+		for (Channel chn = firstCh(); isValid(chn); chn = nextCh(chn)){
 			Rura * rura = getRura(chn);
 
 			if (isRuraOn(chn)){
@@ -134,7 +180,7 @@ private:
 					}
 				}
 			}else{
-				rura->phase = Phase::TURNED_OFF;
+				rura->phase = Phase::TURNED_ON;
 				rura->phaseTime = 100;
 				rura->timer = 0;
 			}
@@ -144,30 +190,14 @@ private:
 	static inline void generateSound(){
 		bool soundOut = false;
 		Rura * rura = nullptr;
-		for (Channel chn = firstCh(); isValid(chn); nextCh(chn)){
+		for (Channel chn = firstCh(); isValid(chn); chn = nextCh(chn)){
 			Rura * rr = getRura(chn);
 			if (rr->phase == Phase::BUZZING){
 				rura = rr;
+				soundOut = rura->light;
 				break;
-			}
-		}
-
-		if (rura){
-
-			uint32_t Freq1 =  rura->startFreq;
-			uint32_t Freq2 =  rura->stopFreq;
-			uint32_t time1 =  rura->timer;
-
-			uint32_t f1 = (Freq2 - Freq1);
-			f1 *= time1;
-			f1 /= rura->phaseTime;
-			f1 += Freq1;
-
-			uint32_t t1 = 1000 / f1;	// w milisekundach
-			//t1 >> 1;	// przez 2 żeby mieć polowe okresu
-			uint32_t polowa_t1 = t1 >> 1;
-			if ((time1 % t1) > polowa_t1){
-				soundOut = true;
+			}else{
+				soundOut = false;
 			}
 		}
 
@@ -180,9 +210,13 @@ public:
 
 	static inline void init(){
 		rng_init();
+		HAL_GPIO_WritePin(in1gnd_GPIO_Port, in1gnd_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(in2gnd_GPIO_Port, in2gnd_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(in3gnd_GPIO_Port, in3gnd_Pin, GPIO_PIN_RESET);
 	}
 
 	static inline void poll(){
+		calculateTimes();
 		generateLight();
 		generateSound();
 	}

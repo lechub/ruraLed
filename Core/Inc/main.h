@@ -57,12 +57,12 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define rura1_Pin GPIO_PIN_7
-#define rura1_GPIO_Port GPIOA
+#define rura3On_Pin GPIO_PIN_5
+#define rura3On_GPIO_Port GPIOC
 #define rura1_2_Pin GPIO_PIN_10
 #define rura1_2_GPIO_Port GPIOB
-#define sound_Pin GPIO_PIN_11
-#define sound_GPIO_Port GPIOB
+#define rura1_Pin GPIO_PIN_15
+#define rura1_GPIO_Port GPIOB
 #define rura2On_Pin GPIO_PIN_6
 #define rura2On_GPIO_Port GPIOC
 #define rura3_Pin GPIO_PIN_7
@@ -71,6 +71,8 @@ void Error_Handler(void);
 #define rura1On_GPIO_Port GPIOC
 #define in1gnd_Pin GPIO_PIN_9
 #define in1gnd_GPIO_Port GPIOC
+#define sound_Pin GPIO_PIN_11
+#define sound_GPIO_Port GPIOC
 #define sound_2_Pin GPIO_PIN_3
 #define sound_2_GPIO_Port GPIOB
 #define rura2_2_Pin GPIO_PIN_4
@@ -79,6 +81,8 @@ void Error_Handler(void);
 #define rura2_GPIO_Port GPIOB
 #define in2gnd_Pin GPIO_PIN_8
 #define in2gnd_GPIO_Port GPIOB
+#define in3gnd_Pin GPIO_PIN_9
+#define in3gnd_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

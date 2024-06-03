@@ -65,6 +65,7 @@ static void MX_GPIO_Init(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -100,6 +101,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  mainPoll();
   }
   /* USER CODE END 3 */
 }
@@ -154,44 +156,33 @@ static void MX_GPIO_Init(void)
 /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(rura1_GPIO_Port, rura1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, rura1_2_Pin|rura1_Pin|sound_2_Pin|rura2_2_Pin
+                          |rura2_Pin|in2gnd_Pin|in3gnd_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, rura1_2_Pin|sound_Pin|sound_2_Pin|rura2_2_Pin
-                          |rura2_Pin|in2gnd_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, rura3_Pin|in1gnd_Pin|sound_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, rura3_Pin|in1gnd_Pin, GPIO_PIN_RESET);
+  /*Configure GPIO pins : rura3On_Pin rura2On_Pin rura1On_Pin */
+  GPIO_InitStruct.Pin = rura3On_Pin|rura2On_Pin|rura1On_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : rura1_Pin */
-  GPIO_InitStruct.Pin = rura1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(rura1_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : rura1_2_Pin sound_Pin sound_2_Pin rura2_2_Pin
-                           rura2_Pin in2gnd_Pin */
-  GPIO_InitStruct.Pin = rura1_2_Pin|sound_Pin|sound_2_Pin|rura2_2_Pin
-                          |rura2_Pin|in2gnd_Pin;
+  /*Configure GPIO pins : rura1_2_Pin rura1_Pin sound_2_Pin rura2_2_Pin
+                           rura2_Pin in2gnd_Pin in3gnd_Pin */
+  GPIO_InitStruct.Pin = rura1_2_Pin|rura1_Pin|sound_2_Pin|rura2_2_Pin
+                          |rura2_Pin|in2gnd_Pin|in3gnd_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : rura2On_Pin rura1On_Pin */
-  GPIO_InitStruct.Pin = rura2On_Pin|rura1On_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : rura3_Pin in1gnd_Pin */
-  GPIO_InitStruct.Pin = rura3_Pin|in1gnd_Pin;
+  /*Configure GPIO pins : rura3_Pin in1gnd_Pin sound_Pin */
+  GPIO_InitStruct.Pin = rura3_Pin|in1gnd_Pin|sound_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
