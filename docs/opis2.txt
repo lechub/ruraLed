@@ -1,0 +1,9 @@
+
+czas reakcji - randomowo w przedziale 30-50 sekund
+ilość błysków randomowo 2 do 5
+Byłoby super gdyby powtórzenia drgań były w randomowych odstępach
+Czyli jeśli mamy 4 błyski to np. tak: błysk_błysk_ _błysk,błysk_błysk
+przy czym spacja to pół sekundy
+Czas reakcji jednak krótszy 20-40 sekund
+ 
+ 
