@@ -36,7 +36,8 @@ extern "C" {
 
 //**** sub-wersje
 //
-#define PROG_SUB_VERSION 0  // wersja startowa - ruraLed - sterownik zeputych świetlówek
+//#define PROG_SUB_VERSION 0  // wersja startowa - ruraLed - sterownik zeputych świetlówek
+#define PROG_SUB_VERSION 1  // poprawki do sposobu mrugania - kilka błysków zanim włączą się rury.
 
 
 static const uint16_t SOTWARE_VERSION = PROG_MAIN_VERSION * 1000 + PROG_SUB_VERSION;
@@ -65,14 +66,17 @@ static constexpr uint16_t LINE_TEST_LENGTH = 200;
 static constexpr uint32_t BUZZ_FREQUENCY_MIN = 20;	//10
 static constexpr uint32_t BUZZ_FREQUENCY_MAX = 30;	//50
 
-static constexpr uint32_t BUZZ_TIME_MIN_MS = 2 * 1000;
-static constexpr uint32_t BUZZ_TIME_MAX_MS = 8 * 1000;
+static constexpr uint32_t BUZZ_TIME_MIN_MS = 300;	// 2 * 1000;
+static constexpr uint32_t BUZZ_TIME_MAX_MS = 1000;	// 8 * 1000;
+
+static constexpr uint32_t BUZZ_COUNT_MAX = 5;	// ilosc błysków maksimum
+static constexpr uint32_t BUZZ_COUNT_MIN = 2;	// ilosc blyskow minimum
 
 static constexpr uint32_t ON_TIME_MIN_MS = 20 * 1000;	//3
 static constexpr uint32_t ON_TIME_MAX_MS = 40 * 1000;	//15
 
-static constexpr uint32_t OFF_TIME_MIN_MS = 400;		//2000
-static constexpr uint32_t OFF_TIME_MAX_MS = 600;		//5000
+static constexpr uint32_t OFF_TIME_MIN_MS = 200;		//2000
+static constexpr uint32_t OFF_TIME_MAX_MS = 1000;		//5000
 
 
 #ifdef __cplusplus
